@@ -23,7 +23,7 @@ class EnterForm:
         if self.login.get() == "user" and self.password.get() == "password":
             self.parent_root.deiconify()
             self.top.destroy()
-            MainWindow.start_program()
+            MainWindow.start_program(self.parent_root)
 
     def exit_program(self):
         self.top.destroy()
