@@ -2,6 +2,9 @@ from tkinter import Tk, Label, Button
 from tkinter import ttk
 from libs.User import User
 from libs.MainWindow import MainWindow
+from libs.Config import Config
+
+from firebase import Firebase
 
 
 class EnterForm:
@@ -18,6 +21,7 @@ class EnterForm:
         self.sign_in_form.geometry(f'300x170+{width // 2 - 150}+{height // 2 - 100}')
 
         self.user = User()
+        self.firebase = Firebase(Config.get_config())
 
         # Объявление виджетов
         self.label_enter = Label(self.sign_in_form, text='Войдите в Yogify', bg='#1e90ff', fg='#fff', font=15, width=34, pady=10)
@@ -40,9 +44,11 @@ class EnterForm:
 
     def check_userdata(self):
         """Проверка введенных данных пользователя"""
-        user = self.user.get_test_user()
-        if user['login'] == self.login.get():
+        # user = self.user.get_test_user()
+        auth = self.firebase.auth()
+        user = auth.sign_in_with_email_and_password(self.login, self.password)
+        if user['login'] == self.login.get() and user['password']:
             self.sign_in_form.destroy()
             MainWindow()
         else:
-            print(user['login'])
+            print(False)
