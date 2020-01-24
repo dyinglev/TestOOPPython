@@ -1,11 +1,12 @@
 from tkinter import *
-from libs.MainWindow import MainWindow
+# from libs.MainWindow import MainWindow
 
 
 class EnterForm:
-    def __init__(self, parent_root):
+    def __init__(self, parent_root, next):
         self.top = Toplevel()
         self.parent_root = parent_root
+        self.next = next
 
         # Создаем 2 поля ввода и 2 кнопки
         self.login = Entry(self.top)
@@ -23,7 +24,7 @@ class EnterForm:
         if self.login.get() == "user" and self.password.get() == "password":
             self.parent_root.deiconify()
             self.top.destroy()
-            MainWindow.start_program(self.parent_root)
+            self.next(self.parent_root)
 
     def exit_program(self):
         self.top.destroy()
