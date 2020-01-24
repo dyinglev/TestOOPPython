@@ -44,9 +44,9 @@ class EnterForm:
 
     def check_userdata(self):
         """Проверка введенных данных пользователя"""
-        # user = self.user.get_test_user()
-        auth = self.firebase.auth()
-        user = auth.sign_in_with_email_and_password(self.login, self.password)
+        user = self.user.get_test_user()
+        # auth = self.firebase.auth()
+        # user = auth.sign_in_with_email_and_password(self.login, self.password)
         if user['login'] == self.login.get() and user['password']:
             self.sign_in_form.destroy()
             MainWindow()
