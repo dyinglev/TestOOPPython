@@ -15,7 +15,7 @@ class EnterForm:
         width = self.sign_in_form.winfo_screenwidth()
         height = self.sign_in_form.winfo_screenheight()
         # Центрироване окна
-        self.sign_in_form.geometry(f'300x180+{width // 2 - 150}+{height // 2 - 100}')
+        self.sign_in_form.geometry(f'300x170+{width // 2 - 150}+{height // 2 - 100}')
 
         self.user = User()
 
