@@ -1,6 +1,5 @@
 from tkinter import *
 from libs.EnterForm import EnterForm
-import sys
 
 
 class MainWindow:
