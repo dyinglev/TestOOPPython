@@ -1,7 +1,6 @@
 from tkinter import *
 import sys
 
-
 class MainWindow:
     def __init__(self):
         self.root = Tk()
