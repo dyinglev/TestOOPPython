@@ -15,4 +15,5 @@ class MainWindow:
         self.root.withdraw()
         self.root.mainloop()
 
-
+    def start_program(self):
+        print('hello')
