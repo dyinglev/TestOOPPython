@@ -12,9 +12,13 @@ class DataBase:
 
     def db_connect(self):
         """Соединение с БД"""
-        return pymysql.connect(host=self.db_config['server'], user=self.db_config['username'],
-                               password=self.db_config['password'],
-                               db=self.db_config['db_name'], cursorclass=pymysql.cursors.DictCursor)
+        try:
+            connection = pymysql.connect(host=self.db_config['server'], user=self.db_config['username'],
+                                         password=self.db_config['password'],
+                                         db=self.db_config['db_name'], cursorclass=pymysql.cursors.DictCursor)
+        except:
+            return False
+        return connection
 
     def select(self, query):
         """Выбор данных по запросу :query из БД"""
@@ -26,14 +30,15 @@ class DataBase:
                 self.db_connect().close()
         return result if result else False
 
+    def check_db(self):
+        if not self.db_connect():
+            return False
+        return True
+
     def print_db_version(self):
         """Вывод версии MySQL"""
         with self.db_connect().cursor() as cursor:
-            try:
-                cursor.execute("SELECT VERSION()")
-                version = cursor.fetchone()
-            except:
-                return 'Нет соединения с БД'
-            finally:
-                self.db_connect().close()
-        return "Database version: {}".format(version[0])
+            cursor.execute("SELECT VERSION()")
+            version = cursor.fetchone()
+            print(f"Database version: {version['VERSION()']}")
+            self.db_connect().close()
