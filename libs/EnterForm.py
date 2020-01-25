@@ -4,7 +4,7 @@ from libs.User import User
 from libs.MainWindow import MainWindow
 from libs.Config import Config
 
-from firebase import Firebase
+import pymysql
 
 
 class EnterForm:
@@ -20,11 +20,13 @@ class EnterForm:
         # Центрироване окна
         self.sign_in_form.geometry(f'300x170+{width // 2 - 150}+{height // 2 - 100}')
 
+        # Объекты необходимых классов
         self.user = User()
-        self.firebase = Firebase(Config.get_config())
+        self.db = Config()
 
         # Объявление виджетов
-        self.label_enter = Label(self.sign_in_form, text='Войдите в Yogify', bg='#1e90ff', fg='#fff', font=15, width=34, pady=10)
+        self.label_enter = Label(self.sign_in_form, text='Войдите в Yogify', bg='#1e90ff', fg='#fff', font=15, width=34,
+                                 pady=10)
         self.label_login = Label(self.sign_in_form, text='Логин')
         self.login = ttk.Entry(self.sign_in_form, width=30)
         self.login.focus_set()
@@ -45,10 +47,15 @@ class EnterForm:
     def check_userdata(self):
         """Проверка введенных данных пользователя"""
         user = self.user.get_test_user()
-        # auth = self.firebase.auth()
-        # user = auth.sign_in_with_email_and_password(self.login, self.password)
         if user['login'] == self.login.get() and user['password']:
             self.sign_in_form.destroy()
             MainWindow()
         else:
-            print(False)
+            self.db_config = self.db.get_config()
+            con = pymysql.connect(self.db_config['server'], self.db_config['username'], self.db_config['password'],
+                                  self.db_config['db_name'])
+            with con:
+                cur = con.cursor()
+                cur.execute("SELECT VERSION()")
+                version = cur.fetchone()
+                print("Database version: {}".format(version[0]))
