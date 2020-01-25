@@ -19,13 +19,21 @@ class DataBase:
     def select(self, query):
         """Выбор данных по запросу :query из БД"""
         with self.db_connect().cursor() as c:
-            c.execute(query)
-            result = c.fetchone()
+            try:
+                c.execute(query)
+                result = c.fetchone()
+            finally:
+                self.db_connect().close()
         return result if result else False
 
     def print_db_version(self):
         """Вывод версии MySQL"""
         with self.db_connect().cursor() as cursor:
-            cursor.execute("SELECT VERSION()")
-            version = cursor.fetchone()
+            try:
+                cursor.execute("SELECT VERSION()")
+                version = cursor.fetchone()
+            except:
+                return 'Нет соединения с БД'
+            finally:
+                self.db_connect().close()
         return "Database version: {}".format(version[0])
