@@ -21,7 +21,7 @@ class DataBase:
         with self.db_connect().cursor() as c:
             c.execute(query)
             result = c.fetchone()
-        return result
+        return result if result else False
 
     def print_db_version(self):
         """Вывод версии MySQL"""

@@ -46,8 +46,11 @@ class EnterForm:
             messagebox.showerror('Ошибка входа', 'Заполните оба поля!')
         else:
             user = self.user.get_user_by_login_and_password(self.login.get(), self.password.get())
-            if user['username'] == self.login.get() and user['password'] == self.password.get():
-                self.sign_in_form.destroy()
-                MainWindow()
-            else:
+            if not user:
                 messagebox.showerror('Ошибка входа', 'Неправильное имя пользователя или пароль')
+            else:
+                if user['username'] == self.login.get() and user['password'] == self.password.get():
+                    self.sign_in_form.destroy()
+                    MainWindow()
+                else:
+                    messagebox.showerror('Ошибка входа', 'Неправильное имя пользователя или пароль')
