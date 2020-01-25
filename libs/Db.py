@@ -3,17 +3,29 @@ from libs.Config import Config
 
 
 class DataBase:
+    """Класс для работы с БД"""
+
     def __init__(self):
+        """Получение данных для соединения с БД"""
         c = Config()
         self.db_config = c.get_config()
 
     def db_connect(self):
-        return pymysql.connect(self.db_config['server'], self.db_config['username'], self.db_config['password'],
-                               self.db_config['db_name'])
+        """Соединение с БД"""
+        return pymysql.connect(host=self.db_config['server'], user=self.db_config['username'],
+                               password=self.db_config['password'],
+                               db=self.db_config['db_name'], cursorclass=pymysql.cursors.DictCursor)
+
+    def select(self, query):
+        """Выбор данных по запросу :query из БД"""
+        with self.db_connect().cursor() as c:
+            c.execute(query)
+            result = c.fetchone()
+        return result
 
     def print_db_version(self):
-        with self.db_connect():
-            cur = self.db_connect().cursor()
-            cur.execute("SELECT VERSION()")
-            version = cur.fetchone()
+        """Вывод версии MySQL"""
+        with self.db_connect().cursor() as cursor:
+            cursor.execute("SELECT VERSION()")
+            version = cursor.fetchone()
         return "Database version: {}".format(version[0])

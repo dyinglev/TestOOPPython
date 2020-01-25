@@ -1,5 +1,4 @@
-from tkinter import Tk, Label, Button
-from tkinter import ttk
+from tkinter import Tk, Label, ttk, messagebox
 from libs.User import User
 from libs.MainWindow import MainWindow
 
@@ -42,9 +41,13 @@ class EnterForm:
 
     def check_userdata(self):
         """Проверка введенных данных пользователя"""
-        user = self.user.get_test_user()
-        if user['login'] == self.login.get() and user['password']:
-            self.sign_in_form.destroy()
-            MainWindow()
+        # user = self.user.get_test_user()
+        if self.login.get == '' or self.password.get() == '':
+            messagebox.showerror('Ошибка входа', 'Заполните оба поля!')
         else:
-            pass # TODO: messagebox
+            user = self.user.get_user_by_login_and_password(self.login.get(), self.password.get())
+            if user['username'] == self.login.get() and user['password'] == self.password.get():
+                self.sign_in_form.destroy()
+                MainWindow()
+            else:
+                messagebox.showerror('Ошибка входа', 'Неправильное имя пользователя или пароль')
