@@ -10,6 +10,7 @@ class EnterForm:
         """Инициализация формы входа"""
         self.sign_in_form = Tk()
         self.sign_in_form.title('Вход')
+        self.sign_in_form.iconbitmap('favicon.ico')
         self.sign_in_form.resizable(False, False)
         width = self.sign_in_form.winfo_screenwidth()
         height = self.sign_in_form.winfo_screenheight()

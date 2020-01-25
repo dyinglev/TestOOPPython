@@ -31,6 +31,7 @@ class DataBase:
         return result if result else False
 
     def check_db(self):
+        """Проверка БД на доступность"""
         if not self.db_connect():
             return False
         return True
