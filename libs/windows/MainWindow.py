@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 from libs.Config.Settings import Settings
+from libs.Classes.Db import DataBase
 
 
 class MainWindow:
@@ -36,30 +37,47 @@ class MainWindow:
             self.main_win.rowconfigure(rows, weight=1)
             self.main_win.columnconfigure(rows, weight=1)
             rows += 1
-
-        # Определение вкладок
-        nb = ttk.Notebook(self.main_win)
-        nb.grid(row=1, column=0, columnspan=50, rowspan=49, sticky='NESW')
+        tabs = ttk.Notebook(self.main_win)
+        tabs.grid(row=1, column=0, columnspan=50, rowspan=49, sticky='NESW')
 
         # Вкладка Список дел
-        todo_win = ttk.Frame(nb)
-        nb.add(todo_win, text='Список дел')
-        # Вертикальные вкладки
-        style = ttk.Style(todo_win)
-        style.configure('lefttab.TNotebook', tabposition='ws')
-        notebook = ttk.Notebook(todo_win, style='lefttab.TNotebook')
-        f1 = todo_win.Frame(notebook, bg='red', width=200, height=200)
-        f2 = todo_win.Frame(notebook, bg='blue', width=200, height=200)
-        notebook.add(f1, text='Frame 1')
-        notebook.add(f2, text='Frame 2')
-        notebook.pack()
+        todo_win = ttk.Frame(tabs)
+        tabs.add(todo_win, text='Список дел')
+        todo_win_rows = 0
+        while todo_win_rows < 50:
+            todo_win.rowconfigure(todo_win_rows, weight=1)
+            todo_win.columnconfigure(todo_win_rows, weight=1)
+            todo_win_rows += 1
+        tabs_todo = ttk.Notebook(todo_win)
+        tabs_todo.grid(row=1, column=0, columnspan=50, rowspan=49, sticky='NESW')
+        current_task = ttk.Frame(tabs_todo)
+        # Текущие
+        tabs_todo.add(current_task, text='Текущие')
+
+        # Выполненные
+        done_task = ttk.Frame(tabs_todo)
+        tabs_todo.add(done_task, text='Выполненные')
+        tasks = self.get_tasks_by_user_id(10)
+        task_y = 10
+        task_i = 1
+        for task in tasks:
+            text = str(task_i) + '. ' + task['text'][:30]
+            if len(task['text']) > 30:
+                text += '...'
+            l = Label(current_task, text=text).place(x=10, y=task_y)
+            task_y += 30
+            task_i += 1
 
         # Вкладка Бухгалтер
-        accountant_win = ttk.Frame(nb)
-        nb.add(accountant_win, text='Финансы')
+        accountant_win = ttk.Frame(tabs)
+        tabs.add(accountant_win, text='Финансы')
 
         # Запуск
         self.main_win.mainloop()
+
+    def get_tasks_by_user_id(self, count):
+        query = 'SELECT * FROM `tasks` WHERE `user_id` = ' + str(self.user['id']) + ' LIMIT ' + str(count)
+        return DataBase().select(query, 'all')
 
     def on_exit(self):
         self.main_win.destroy()

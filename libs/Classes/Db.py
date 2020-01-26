@@ -20,15 +20,24 @@ class DataBase:
             return False
         return connection
 
-    def select(self, query):
+    def select(self, query, how_many = 'all'):
         """Выбор данных по запросу :query из БД"""
-        with self.db_connect().cursor() as c:
-            try:
-                c.execute(query)
-                result = c.fetchone()
-            finally:
-                self.db_connect().close()
-        return result if result else False
+        if how_many == 'one':
+            with self.db_connect().cursor() as c:
+                try:
+                    c.execute(query)
+                    result = c.fetchone()
+                finally:
+                    self.db_connect().close()
+            return result if result else False
+        else:
+            with self.db_connect().cursor() as c:
+                try:
+                    c.execute(query)
+                    result = c.fetchall()
+                finally:
+                    self.db_connect().close()
+            return result if result else False
 
     def check_db(self):
         """Проверка БД на доступность"""
