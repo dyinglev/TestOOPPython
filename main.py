@@ -1,5 +1,5 @@
-from libs.EnterForm import EnterForm
-from libs.Db import DataBase
+from libs.windows.EnterForm import EnterForm
+from libs.Classes.Db import DataBase
 from tkinter import messagebox
 
 

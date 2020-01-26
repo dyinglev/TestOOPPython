@@ -1,24 +1,47 @@
 from tkinter import Tk, Label, ttk, messagebox
-from libs.User import User
-from libs.MainWindow import MainWindow
+from libs.Classes.User import User
+from libs.windows.MainWindow import MainWindow
+from libs.Config.Settings import Settings
 
 
 class EnterForm:
     """Работа с формой входа"""
 
     def __init__(self):
+        """Инициализация класса"""
+        # Объекты необходимых классов
+        self.user = User()
+
+        self.init_ui()
+        self.sign_in_form.mainloop()
+
+    def check_userdata(self):
+        """Проверка введенных данных пользователя"""
+        # user = self.user.get_test_user()
+        if self.login.get == '' or self.password.get() == '':
+            messagebox.showerror('Ошибка входа', 'Заполните оба поля!')
+        else:
+            user = self.user.get_user_by_login_and_password(self.login.get(), self.password.get())
+            if not user:
+                messagebox.showerror('Ошибка входа', 'Неправильное имя пользователя или пароль')
+            else:
+                if user['username'] == self.login.get() and user['password'] == self.password.get():
+                    self.sign_in_form.destroy()
+                    MainWindow(user)
+                else:
+                    messagebox.showerror('Ошибка входа', 'Неправильное имя пользователя или пароль')
+
+    def init_ui(self):
         """Инициализация формы входа"""
         self.sign_in_form = Tk()
         self.sign_in_form.title('Вход')
-        self.sign_in_form.iconbitmap('favicon.ico')
+        self.sign_in_form.iconbitmap(Settings().FAVICON)
         self.sign_in_form.resizable(False, False)
+
+        # Центрироване окна
         width = self.sign_in_form.winfo_screenwidth()
         height = self.sign_in_form.winfo_screenheight()
-        # Центрироване окна
         self.sign_in_form.geometry(f'300x170+{width // 2 - 150}+{height // 2 - 100}')
-
-        # Объекты необходимых классов
-        self.user = User()
 
         # Объявление виджетов
         self.label_enter = Label(self.sign_in_form, text='Войдите в Yogify', bg='#1e90ff', fg='#fff', font=15, width=34,
@@ -37,21 +60,3 @@ class EnterForm:
         self.label_password.place(x=75, y=100, anchor='e')
         self.password.place(x=80, y=100, anchor='w')
         self.btn_sign_in.place(relx=0.5, y=130, anchor='n')
-
-        self.sign_in_form.mainloop()
-
-    def check_userdata(self):
-        """Проверка введенных данных пользователя"""
-        # user = self.user.get_test_user()
-        if self.login.get == '' or self.password.get() == '':
-            messagebox.showerror('Ошибка входа', 'Заполните оба поля!')
-        else:
-            user = self.user.get_user_by_login_and_password(self.login.get(), self.password.get())
-            if not user:
-                messagebox.showerror('Ошибка входа', 'Неправильное имя пользователя или пароль')
-            else:
-                if user['username'] == self.login.get() and user['password'] == self.password.get():
-                    self.sign_in_form.destroy()
-                    MainWindow()
-                else:
-                    messagebox.showerror('Ошибка входа', 'Неправильное имя пользователя или пароль')

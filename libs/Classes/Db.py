@@ -1,5 +1,5 @@
 import pymysql
-from libs.Config import Config
+from libs.Config.Config import Config
 
 
 class DataBase:

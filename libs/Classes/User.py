@@ -1,4 +1,4 @@
-from libs.Db import DataBase
+from libs.Classes.Db import DataBase
 
 
 class User:
