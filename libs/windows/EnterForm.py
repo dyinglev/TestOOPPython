@@ -12,27 +12,7 @@ class EnterForm:
         # Объекты необходимых классов
         self.user = User()
 
-        self.init_ui()
-        self.sign_in_form.mainloop()
-
-    def check_userdata(self):
-        """Проверка введенных данных пользователя"""
-        # user = self.user.get_test_user()
-        if self.login.get == '' or self.password.get() == '':
-            messagebox.showerror('Ошибка входа', 'Заполните оба поля!')
-        else:
-            user = self.user.get_user_by_login_and_password(self.login.get(), self.password.get())
-            if not user:
-                messagebox.showerror('Ошибка входа', 'Неправильное имя пользователя или пароль')
-            else:
-                if user['username'] == self.login.get() and user['password'] == self.password.get():
-                    self.sign_in_form.destroy()
-                    MainWindow(user)
-                else:
-                    messagebox.showerror('Ошибка входа', 'Неправильное имя пользователя или пароль')
-
-    def init_ui(self):
-        """Инициализация формы входа"""
+        # Инициализация формы входа
         self.sign_in_form = Tk()
         self.sign_in_form.title('Вход')
         self.sign_in_form.iconbitmap(Settings().FAVICON)
@@ -50,7 +30,7 @@ class EnterForm:
         self.login = ttk.Entry(self.sign_in_form, width=30)
         self.login.focus_set()
         self.label_password = Label(self.sign_in_form, text='Пароль')
-        self.password = ttk.Entry(self.sign_in_form, width=30)
+        self.password = ttk.Entry(self.sign_in_form, width=30, show='*')
         self.btn_sign_in = ttk.Button(self.sign_in_form, text='Войти', command=self.check_userdata, width='14')
 
         # Расстановка виджетов
@@ -60,3 +40,22 @@ class EnterForm:
         self.label_password.place(x=75, y=100, anchor='e')
         self.password.place(x=80, y=100, anchor='w')
         self.btn_sign_in.place(relx=0.5, y=130, anchor='n')
+
+        # Запуск
+        self.sign_in_form.mainloop()
+
+    def check_userdata(self):
+        """Проверка введенных данных пользователя"""
+        # user = self.user.get_test_user()
+        if self.login.get == '' or self.password.get() == '':
+            messagebox.showerror('Ошибка входа', 'Заполните оба поля!')
+        else:
+            user = self.user.get_user_by_login_and_password(self.login.get(), self.password.get())
+            if not user:
+                messagebox.showerror('Ошибка входа', 'Неправильное имя пользователя или пароль')
+            else:
+                if user['username'] == self.login.get() and user['password'] == self.password.get():
+                    self.sign_in_form.destroy()
+                    MainWindow(user)
+                else:
+                    messagebox.showerror('Ошибка входа', 'Неправильное имя пользователя или пароль')
