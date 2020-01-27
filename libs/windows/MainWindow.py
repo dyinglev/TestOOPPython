@@ -50,23 +50,40 @@ class MainWindow:
             todo_win_rows += 1
         tabs_todo = ttk.Notebook(todo_win)
         tabs_todo.grid(row=1, column=0, columnspan=50, rowspan=49, sticky='NESW')
-        current_task = ttk.Frame(tabs_todo)
+
         # Текущие
+        current_task = ttk.Frame(tabs_todo)
         tabs_todo.add(current_task, text='Текущие')
+        btn_add_task = ttk.Button(current_task, text='Добавить задачу', command=self.add_task)
+        btn_add_task.grid(row=0, column=0, pady=20, padx=10, sticky=N)
+        tasks_listbox = Listbox(current_task)
+        tasks = self.get_tasks_by_user_id(10)
+        if not tasks:
+            Label(current_task, text='Задач пока нет...').grid(row=1, column=0, columnspan=2)
+        else:
+            task_i = 1
+            for task in tasks:
+                text = str(task_i) + '. ' + task['text'][:30]
+                if len(task['text']) > 30:
+                    text += '...'
+                if task['priority'] == 1:
+                    text = '* ' + text
+                tasks_listbox.insert(END, text)
+                task_i += 1
+            tasks_listbox.grid(row=1, column=0, sticky=N+S+W+E)
+            tasks_listbox.bind("<<ListboxSelect>>", self.edit_task)
+        textarea_task = Text(current_task)
+        textarea_task.grid(row=0, rowspan=2, column=1, columnspan=3, sticky=N+S+W+E)
+        btn_save = ttk.Button(current_task, text='Сохранить')
+        btn_delete = ttk.Button(current_task, text='Удалить')
+        btn_complete = ttk.Button(current_task, text='Выполнено')
+        btn_save.grid(row=2, column=1)
+        btn_delete.grid(row=2, column=2)
+        btn_complete.grid(row=2, column=3)
 
         # Выполненные
         done_task = ttk.Frame(tabs_todo)
         tabs_todo.add(done_task, text='Выполненные')
-        tasks = self.get_tasks_by_user_id(10)
-        task_y = 10
-        task_i = 1
-        for task in tasks:
-            text = str(task_i) + '. ' + task['text'][:30]
-            if len(task['text']) > 30:
-                text += '...'
-            l = Label(current_task, text=text).place(x=10, y=task_y)
-            task_y += 30
-            task_i += 1
 
         # Вкладка Бухгалтер
         accountant_win = ttk.Frame(tabs)
@@ -75,8 +92,15 @@ class MainWindow:
         # Запуск
         self.main_win.mainloop()
 
+    def edit_task(self):
+        pass
+
+    def add_task(self):
+        pass
+
     def get_tasks_by_user_id(self, count):
-        query = 'SELECT * FROM `tasks` WHERE `user_id` = ' + str(self.user['id']) + ' LIMIT ' + str(count)
+        query = 'SELECT * FROM `tasks` WHERE `user_id` = ' + str(
+            self.user['id']) + ' AND `status` = "in_progress" ORDER BY `priority` DESC'
         return DataBase().select(query, 'all')
 
     def on_exit(self):
